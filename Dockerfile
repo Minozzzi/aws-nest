@@ -5,11 +5,11 @@ WORKDIR /home/stages/build
 
 COPY ./package.json pnpm-lock.yaml ./
 
-RUN pnpm i
+RUN npm i
 
 COPY . .
 
-RUN pnpm build
+RUN npm run build
 
 # Stage 2 - Running app
 FROM node:14-slim as running
