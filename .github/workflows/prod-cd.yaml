@@ -13,19 +13,16 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Set up Docker
-        uses: docker/setup-docker@v2
-
-      - name: Build Docker image
-        run: docker build -t aws-nest-api .
-
       - name: Authenticate with GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
+      - name: Build Docker image
+        run: docker build -t ghcr.io/minozzzi/aws-nest-api:latest .
+
       - name: Tag and push Docker image to GHCR
         run: |
-          docker tag aws-nest-api ghcr.io/minozzzi/aws-nest
-          docker push ghcr.io/minozzzi/aws-nest
+          docker tag aws-nest-api ghcr.io/minozzzi/aws-nest-api:latest
+          docker push ghcr.io/minozzzi/aws-nest-api:latest
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@master
