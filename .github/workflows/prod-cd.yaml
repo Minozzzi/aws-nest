@@ -19,9 +19,8 @@ jobs:
       - name: Build Docker image
         run: docker build -t ghcr.io/minozzzi/aws-nest-api:latest .
 
-      - name: Tag and push Docker image to GHCR
+      - name: Push Docker image to GHCR
         run: |
-          docker tag aws-nest-api:latest ghcr.io/minozzzi/aws-nest-api:latest
           docker push ghcr.io/minozzzi/aws-nest-api:latest
 
       - name: SSH into EC2 and deploy
@@ -31,7 +30,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ghcr.io/minozzzi/aws-nest
+            docker pull ghcr.io/minozzzi/aws-nest-api:latest
             docker stop aws-nest-api || true
             docker rm aws-nest-api || true
-            docker run -d --name aws-nest-api -p 3333:3333 ghcr.io/minozzzi/aws-nest
+            docker run -d --name aws-nest-api -p 3333:3333 ghcr.io/minozzzi/aws-nest-api:latest
