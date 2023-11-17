@@ -17,11 +17,11 @@ jobs:
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/minozzzi/aws-nest-api:latest .
+        run: docker build -t ghcr.io/minozzzi/aws-nest:latest .
 
       - name: Push Docker image to GHCR
         run: |
-          docker push ghcr.io/minozzzi/aws-nest-api:latest
+          docker push ghcr.io/minozzzi/aws-nest:latest
 
       - name: SSH into EC2 and deploy
         uses: appleboy/ssh-action@master
@@ -30,7 +30,7 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            docker pull ghcr.io/minozzzi/aws-nest-api:latest
+            docker pull ghcr.io/minozzzi/aws-nest:latest
             docker stop aws-nest-api || true
             docker rm aws-nest-api || true
-            docker run -d --name aws-nest-api -p 3333:3333 ghcr.io/minozzzi/aws-nest-api:latest
+            docker run -d --name aws-nest-api -p 3333:3333 ghcr.io/minozzzi/aws-nest:latest
