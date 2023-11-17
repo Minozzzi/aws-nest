@@ -1,4 +1,4 @@
-# Stage 1 - Install dependences
+# Stage 1 - Install dependencies
 FROM node:18-slim as build
 
 USER node
@@ -29,4 +29,4 @@ COPY --from=build /home/stages/build .
 
 EXPOSE 3333
 
-CMD ["pm2", "start", "ecosystem.config.js"]
+CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
