@@ -1,5 +1,5 @@
 # Stage 1 - Install dependences
-FROM node:14-slim as build
+FROM node:18-alpine as build
 
 WORKDIR /home/stages/build
 
@@ -12,7 +12,7 @@ COPY . .
 RUN npm run build
 
 # Stage 2 - Running app
-FROM node:14-slim as running
+FROM node:18-alpine as running
 
 ARG NODE_ENV=production
 ARG PORT=3333

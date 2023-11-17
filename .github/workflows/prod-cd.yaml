@@ -21,7 +21,7 @@ jobs:
 
       - name: Tag and push Docker image to GHCR
         run: |
-          docker tag aws-nest-api ghcr.io/minozzzi/aws-nest-api:latest
+          docker tag aws-nest-api:latest ghcr.io/minozzzi/aws-nest-api:latest
           docker push ghcr.io/minozzzi/aws-nest-api:latest
 
       - name: SSH into EC2 and deploy
