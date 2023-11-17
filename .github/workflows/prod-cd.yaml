@@ -1,0 +1,40 @@
+name: Deploy to production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker
+        uses: docker/setup-docker@v2
+
+      - name: Build Docker image
+        run: docker build -t aws-nest-api .
+
+      - name: Authenticate with GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u $GITHUB_ACTOR --password-stdin
+
+      - name: Tag and push Docker image to GHCR
+        run: |
+          docker tag aws-nest-api ghcr.io/minozzzi/aws-nest
+          docker push ghcr.io/minozzzi/aws-nest
+
+      - name: SSH into EC2 and deploy
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            docker pull ghcr.io/minozzzi/aws-nest
+            docker stop aws-nest-api || true
+            docker rm aws-nest-api || true
+            docker run -d --name aws-nest-api -p 3333:3333 ghcr.io/minozzzi/aws-nest
